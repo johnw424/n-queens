@@ -79,12 +79,30 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      // get row of interest
+      var row = this.get(rowIndex);
+      // sum through each row since queens = 1
+      var result = _.reduce(row, function(item, accumulator) {
+        return  item + accumulator;
+      });
+      // if more than 1 queen, result should be greater than 1
+      if(result > 1) {
+        return true;
+      }
+      return false;
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      // get number of rows
+      var numRows = this.rows().length;
+      // loop through each row to see if conflict exists
+      for (var i = 0; i < numRows; i++){
+        if(this.hasRowConflictAt(i)){
+          return true;
+        }
+      }
+      return false;
     },
 
 
