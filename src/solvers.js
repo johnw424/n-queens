@@ -13,11 +13,45 @@
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
-window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+window.findNRooksSolution = function(num) {
+  if(num === 1) {
+    return [[1]];
+  }
 
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
+  var solution = [];
+
+  //write the recursion function addQueen
+  var addQueen = function(board, queenCount, queenPosition){
+    //update board by placing queen at queenPosition
+    var rowPosition = ((queenPosition - (queenPosition % num)) / num);
+    var colPosition = (queenPosition % num);
+    board.attributes[rowPosition][colPosition] = 1;
+    //check if board is still valid
+    if(!(board.hasAnyColConflicts() || board.hasAnyRowConflicts())){
+      //if check num and queenCount equal then push to the solution
+      if(queenCount === num){
+        // return board.attributes;
+        solution.push(board.rows());
+        // board.attributes[rowPosition][colPosition] = 0;
+      //else call for loop and continue recursion;
+      }else{
+        for (var i = (queenPosition + 1); i < (num*num); i++){
+          addQueen(board, (queenCount + 1), i);
+        }
+      }
+    }else{
+      board.attributes[rowPosition][colPosition] = 0;
+    }
+  };
+
+  //loop through first possible queen move
+  for (var i = 0; i < (num*num); i++){
+    //start the recursion
+    var newBoard = new Board({n:num});
+    addQueen(newBoard, 1, i);
+  }
+
+  return solution[0];
 };
 
 
