@@ -30,13 +30,12 @@ window.findNRooksSolution = function(num) {
     if(!(board.hasAnyColConflicts() || board.hasAnyRowConflicts())){
       //if check num and queenCount equal then push to the solution
       if(queenCount === num){
-        // return board.attributes;
         solution.push(board.rows());
-        // board.attributes[rowPosition][colPosition] = 0;
+        board.attributes[rowPosition][colPosition] = 0;
       //else call for loop and continue recursion;
       }else{
-        for (var i = (queenPosition + 1); i < (num*num); i++){
-          addQueen(board, (queenCount + 1), i);
+        for (var j = (queenPosition + 1); j < (num*num); j++){
+          addQueen(board, (queenCount + 1), j);
         }
       }
     }else{
@@ -45,7 +44,7 @@ window.findNRooksSolution = function(num) {
   };
 
   //loop through first possible queen move
-  for (var i = 0; i < (num*num); i++){
+  for (var i = 0; i < num * num; i++){
     //start the recursion
     var newBoard = new Board({n:num});
     addQueen(newBoard, 1, i);
@@ -57,14 +56,24 @@ window.findNRooksSolution = function(num) {
 
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
-window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
-
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
+window.countNRooksSolutions = function(num) {
+  var solution = 0;
+  var columnConflict = {};
+  var placeRook = function(num, row, columnConflict){
+    for (var i = 0; i < num; i++){
+      if(!columnConflict[i]) {
+        if(row === num - 1) {
+          solution++;
+        }
+        columnConflict[i] = true;
+        placeRook(num, row+1, columnConflict);
+        columnConflict[i] = false;
+      }
+    }
+  };
+  placeRook(num, 0, columnConflict);
+  return solution;
 };
-
-
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
